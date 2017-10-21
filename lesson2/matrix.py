@@ -97,6 +97,7 @@ class Matrix(object):
         Cij = Aij+Bij
         '''
         return self
+        
 
     def __sub__(self, mat):
         """ Переопределение операции вычитания "-"
@@ -182,7 +183,6 @@ class Matrix(object):
 
         array = [[0]*n for x in range(n)]
         idx = 0
-        
         for row in array:
             row[idx] = 1
             idx += 1
@@ -191,7 +191,12 @@ class Matrix(object):
 
 
 if __name__ == "__main__":
-
+    a = Matrix.fromList([[1,2], [3, 4]])
+    print(a)
+    print(a*2)
+    print('Identity:')
+    print(Matrix.makeId(3))
+    print(a*a)
     pass
 
 

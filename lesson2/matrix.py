@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import random
 import operator
 import sys
@@ -61,7 +62,8 @@ class Matrix(object):
         s='\n'.join([' '.join([str(item) for item in row]) for row in self.array])
         return s + '\n'
 
-    def getRank(self):
+    @property
+    def rank(self):
         """Получить число строк и столбцов
         """
         return (self.n, self.m)
@@ -73,46 +75,39 @@ class Matrix(object):
         return (mat.array == self.array)
 
     def transpose(self):
-        """ Транспонированное представление матрицы 
-    
-            Здесь нужно вписать свой код для создания 
-            функции, возвращающей транспонированную
-            матрицу
-
-            Aij = Aji
         """
-        return self
+        Транспонированное представление матрицы
+        """
+        ret = Matrix(self.m, self.n)
+        for i in range(self.m):
+            for j in range(self.n):
+                ret.array[i][j] = self.array[j][i]
+        return ret
+
+    @staticmethod
+    def _mat_sum(a, b, sign=False):
+        if a.rank != b.rank:
+            raise MatrixError("Trying to add matrixes of varying rank!")
+
+        ret = Matrix(a.n, a.m, init=True)
+        for i in range(a.n):
+            for j in range(a.m):
+                lvalue = a.array[i][j]
+                rvalue = b.array[i][j]
+                ret.array[i][j] = lvalue + rvalue if not sign else lvalue - rvalue
+        return ret
 
     def __add__(self, mat):
-        """ Переопределение операции сложения "+"
-        для матриц
         """
-        if self.getRank() != mat.getRank():
-            raise MatrixError("Trying to add matrixes of varying rank!")
-
-        '''
-        Сюда вписать код функции, выполняющей
-        операцию сложения
-
-        Cij = Aij+Bij
-        '''
-        return self
-        
+        Переопределение операции сложения "+" для матриц
+        """
+        return Matrix._mat_sum(self, mat)
 
     def __sub__(self, mat):
-        """ Переопределение операции вычитания "-"
-        для матриц
         """
-        if self.getRank() != mat.getRank():
-            raise MatrixError("Trying to add matrixes of varying rank!")
-
-        '''
-        Сюда вписать код функции, выполняющей
-        операцию вычитания
-
-        Cij = Aij-Bij
-        '''
-        return self
+        Переопределение операции вычитания "-" для матриц
+        """
+        return Matrix._mat_sum(self, mat, sign=True)
 
     def __mul__(self, mat):
         """Произведение Адамара или поточечное умножение"""
@@ -139,20 +134,21 @@ class Matrix(object):
     def dot(self, mat):
         """ Матричное умножение """
         
-        matn, matm = mat.getRank()
-        
         # для перемножения матриц число столбцов одной 
         # должно равняться числу строк в другой
-        if (self.m != matn):
+        if (self.m != mat.n):
             raise MatrixError("Matrices cannot be multipled!")
-        '''
-        Здесь написать код, выполняющий 
-        матричное перемножение и возвращаюший
-        новую матрицу
 
-        Cij = sum(Aik*Bkj)
-        '''
-        return self
+        depth = self.m
+        ret = Matrix(self.n, mat.m)
+
+        for i in range(ret.n):
+            for j in range(ret.m):
+                ret.array[i][j] = sum(
+                        [self.array[i][p] * mat[p][j] for p in range(depth)]
+                )
+
+        return ret
 
     @classmethod
     def _makeMatrix(cls, array):
@@ -191,12 +187,4 @@ class Matrix(object):
 
 
 if __name__ == "__main__":
-    a = Matrix.fromList([[1,2], [3, 4]])
-    print(a)
-    print(a*2)
-    print('Identity:')
-    print(Matrix.makeId(3))
-    print(a*a)
     pass
-
-

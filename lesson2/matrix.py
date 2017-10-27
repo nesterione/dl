@@ -1,6 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 import random
 import operator
 import sys
+
+
 
 class MatrixError(BaseException):
     """ Класс исключения для матриц """
@@ -80,7 +85,9 @@ class Matrix(object):
             матрицу
 
             Aij = Aji
+
         """
+        self.array = [list(tupl) for tupl in zip(*self.array)]
         return self
 
     def __add__(self, mat):
@@ -95,7 +102,9 @@ class Matrix(object):
         операцию сложения
 
         Cij = Aij+Bij
+
         '''
+        self.array = [[(sum(tupl)) for tupl in zip(first,second)] for (first,second) in zip(self.array, mat.array)]
         return self
         
 
@@ -112,6 +121,7 @@ class Matrix(object):
 
         Cij = Aij-Bij
         '''
+        self.array = [[(tupl[0] - tupl[1]) for tupl in zip(first,second)] for (first,second) in zip(self.array, mat.array)]
         return self
 
     def __mul__(self, mat):
@@ -151,7 +161,11 @@ class Matrix(object):
         новую матрицу
 
         Cij = sum(Aik*Bkj)
+        [sum(a * b for a, b in zip(*combined_row))
+
         '''
+        for combined_row in zip(self.array, zip(*mat.array)):
+            print(combined_row)
         return self
 
     @classmethod

@@ -161,12 +161,10 @@ class Matrix(object):
         новую матрицу
 
         Cij = sum(Aik*Bkj)
-        [sum(a * b for a, b in zip(*combined_row))
-
+       
         '''
-        for combined_row in zip(self.array, zip(*mat.array)):
-            print(combined_row)
-        return self
+        result = Matrix.fromList([[sum(a*b for a,b in zip(self_row,mat_col)) for mat_col in zip(*mat.array)] for self_row in self.array])
+        return result
 
     @classmethod
     def _makeMatrix(cls, array):
